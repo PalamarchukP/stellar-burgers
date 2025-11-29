@@ -6,6 +6,7 @@ import { BurgerIngredientsUI } from '../ui/burger-ingredients';
 
 export const BurgerIngredients: FC = () => {
   /** TODO: взять переменные из стора */
+
   const buns = [];
   const mains = [];
   const sauces = [];
