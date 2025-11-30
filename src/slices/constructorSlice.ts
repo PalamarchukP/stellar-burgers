@@ -36,8 +36,13 @@ const constructorSlice = createSlice({
         state.bun = action.payload;
       } else state.constructorIngredients.push(action.payload);
     },
-    removeIngredient(state, action: PayloadAction<number>) {
-      state.constructorIngredients.splice(action.payload, 1);
+    removeIngredient(state, action: PayloadAction<string>) {
+      const removedIngredient = state.constructorIngredients.find(
+        (el) => el.id === action.payload
+      );
+      if (!removedIngredient) return;
+      const index = state.constructorIngredients.indexOf(removedIngredient);
+      state.constructorIngredients.splice(index, 1);
     },
     clearConstructor(state) {
       state.bun = null;
@@ -72,109 +77,3 @@ export const {
 } = constructorSlice.selectors;
 
 export default constructorSlice;
-
-// import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-
-// import { TIngredient, TConstructorIngredient } from '@utils-types';
-// import { getIngredientsApi } from '@api';
-
-// export interface ProductState {
-//   bun: TIngredient | null;
-//   constructorIngredients: TConstructorIngredient[];
-// }
-
-// const initialState: ProductState = {
-//   bun: null,
-//   constructorIngredients: [],
-// };
-
-// const constructorSlice = createSlice({
-//   name: 'constructor',
-//   initialState,
-//   reducers: {
-//     //ингридиенты
-//     addIngredient(state, action: PayloadAction<TIngredient>) {
-//       state.ingredients.push(action.payload);
-//     },
-//     removeIngredient(state, action: PayloadAction<TIngredient>) {
-//       state.ingredients = state.ingredients.filter(
-//         (ingredient) => ingredient._id !== action.payload._id
-//       );
-//     },
-
-//     //конструктор
-//     setBun(state, action: PayloadAction<TIngredient>) {
-//       state.bun = action.payload;
-//     },
-//     addConstructorIngredient(
-//       state,
-//       action: PayloadAction<TConstructorIngredient>
-//     ) {
-//       state.constructorIngredients.push(action.payload);
-//     },
-//     removeConstructorIngredient(state, action: PayloadAction<number>) {
-//       state.constructorIngredients.splice(action.payload, 1);
-//     },
-//     clearConstructor(state) {
-//       state.bun = null;
-//       state.constructorIngredients = [];
-//     },
-
-//     //заказ
-//     setOrderRequest(state, action: PayloadAction<boolean>) {
-//       state.orderRequest = action.payload;
-//     },
-//     setOrderModalData(state, action: PayloadAction<any | null>) {
-//       state.orderModalData = action.payload;
-//     }
-//   },
-//   selectors: {
-//     getIngredients: (sliceState: ProductState) => sliceState.ingredients,
-//     productsIsLoading: (sliceState: ProductState) => sliceState.loading,
-
-//     getConstructorItems: (sliceState: ProductState) => ({
-//       bun: sliceState.bun,
-//       ingredients: sliceState.constructorIngredients
-//     }),
-
-//     getOrderRequest: (sliceState: ProductState) => sliceState.orderRequest,
-//     getOrderModalData: (sliceState: ProductState) => sliceState.orderModalData
-//   },
-
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchIngredients.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchIngredients.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.error.message ?? null;
-//       })
-//       .addCase(fetchIngredients.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.ingredients = action.payload;
-//       });
-//   }
-// });
-
-// export const {
-//   addIngredient,
-//   removeIngredient,
-//   setBun,
-//   addConstructorIngredient,
-//   removeConstructorIngredient,
-//   clearConstructor,
-//   setOrderRequest,
-//   setOrderModalData
-// } = productSlice.actions;
-
-// export const {
-//   getIngredients,
-//   productsIsLoading,
-//   getConstructorItems,
-//   getOrderRequest,
-//   getOrderModalData
-// } = productSlice.selectors;
-
-// export default productSlice.reducer;

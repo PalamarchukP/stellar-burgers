@@ -12,7 +12,12 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const location = useLocation();
 
     const handleAdd = () => {
-      dispatch(addIngredient({ ...ingredient, id: ingredient._id }));
+      dispatch(
+        addIngredient({
+          ...ingredient,
+          id: Math.random().toString(36).substring(2, 10)
+        })
+      );
     };
 
     return (
