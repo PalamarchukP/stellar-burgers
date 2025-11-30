@@ -44,6 +44,7 @@ const App = () => (
             </Modal>
           }
         />
+
         <Route element={<PrivateRoute />}>
           <Route
             path='/profile/orders/:number'
@@ -53,17 +54,14 @@ const App = () => (
               </Modal>
             }
           />
-        </Route>
-
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-
-        <Route element={<PrivateRoute />}>
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/profile/orders' element={<ProfileOrders />} />
         </Route>
+
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
 
         <Route path='*' element={<NotFound404 />} />
       </Routes>
