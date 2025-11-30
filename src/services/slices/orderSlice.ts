@@ -2,8 +2,8 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TOrder, TOrdersData } from '@utils-types';
 import { getIngredientsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
-import constructorSlice from './constructorSlice';
 import { useDispatch } from '@store';
+import { clearConstructor } from '@slices';
 
 export interface OrderState {
   // Для создания нового заказа (конструктор бургеров)
@@ -32,7 +32,7 @@ export const sendOrderThunk = createAsyncThunk(
     try {
       const response = await orderBurgerApi(ingredients);
       if (response.success) {
-        dispatch(constructorSlice.actions.clearConstructor());
+        dispatch(clearConstructor());
       }
       return response;
     } catch (err) {

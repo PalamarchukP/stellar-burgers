@@ -26,16 +26,7 @@ export const fetchIngredientsThunk = createAsyncThunk(
 const productSlice = createSlice({
   name: 'ingredients',
   initialState,
-  reducers: {
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      state.ingredients.push(action.payload);
-    },
-    removeIngredient(state, action: PayloadAction<TIngredient>) {
-      state.ingredients = state.ingredients.filter(
-        (ingredient) => ingredient._id !== action.payload._id
-      );
-    }
-  },
+  reducers: {},
   selectors: {
     getIngredients: (sliceState: IngredientState) => sliceState.ingredients,
     productsIsLoading: (sliceState: IngredientState) => sliceState.loading
@@ -57,8 +48,6 @@ const productSlice = createSlice({
       });
   }
 });
-
-export const { addIngredient, removeIngredient } = productSlice.actions;
 
 export const { getIngredients, productsIsLoading } = productSlice.selectors;
 
