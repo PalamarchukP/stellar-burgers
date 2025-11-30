@@ -3,7 +3,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TOrder, TOrdersData } from '@utils-types';
 import { getIngredientsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
 import constructorSlice from './constructorSlice';
-import { useDispatch } from '../services/store';
+import { useDispatch } from '@store';
 
 export interface OrderState {
   // Для создания нового заказа (конструктор бургеров)
@@ -59,9 +59,22 @@ const orderSlice = createSlice({
   reducers: {
     setCurrentOrder(state, action: PayloadAction<TOrder>) {
       state.currentOrder = action.payload;
+    },
+    clearNewOrder(state, action: PayloadAction<void>) {
+      state.newOrder = null;
+    },
+    clearCurrentOrder(state, action: PayloadAction<void>) {
+      state.currentOrder = null;
     }
   },
-  selectors: {},
+  selectors: {
+    newOrderSelect: (sliceState: OrderState) => sliceState.newOrder,
+    newOrderRequestSelect: (sliceState: OrderState) =>
+      sliceState.newOrderRequest,
+    currentOrderSelect: (sliceState: OrderState) => sliceState.currentOrder,
+    currentOrderLoadingSelect: (sliceState: OrderState) => sliceState.loading,
+    orderIsLoadingSelect: (sliceState: OrderState) => sliceState.loading
+  },
 
   extraReducers: (builder) => {
     builder
@@ -83,8 +96,15 @@ const orderSlice = createSlice({
   }
 });
 
-export const { setCurrentOrder } = orderSlice.actions;
+export const { setCurrentOrder, clearNewOrder, clearCurrentOrder } =
+  orderSlice.actions;
 
-export const {} = orderSlice.selectors;
+export const {
+  newOrderSelect,
+  newOrderRequestSelect,
+  currentOrderSelect,
+  currentOrderLoadingSelect,
+  orderIsLoadingSelect
+} = orderSlice.selectors;
 
 export default orderSlice;

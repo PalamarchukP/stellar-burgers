@@ -13,17 +13,13 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import PrivateRoute from '../private-route/PrivateRoute';
 
-const App = () => (
-  <div className={styles.app}>
-    <BrowserRouter
-      future={{
-        v7_relativeSplatPath: true,
-        v7_startTransition: true
-      }}
-    >
+const App = () => {
+  const navigate = useNavigate();
+  return (
+    <div className={styles.app}>
       <AppHeader />
       <Routes>
         <Route path='/' element={<ConstructorPage />} />
@@ -31,7 +27,12 @@ const App = () => (
         <Route
           path='/feed/:number'
           element={
-            <Modal title='' onClose={() => {}}>
+            <Modal
+              title=''
+              onClose={() => {
+                navigate(-1);
+              }}
+            >
               <OrderInfo />
             </Modal>
           }
@@ -39,7 +40,12 @@ const App = () => (
         <Route
           path='/ingredients/:id'
           element={
-            <Modal title='' onClose={() => {}}>
+            <Modal
+              title=''
+              onClose={() => {
+                navigate(-1);
+              }}
+            >
               <IngredientDetails />
             </Modal>
           }
@@ -49,7 +55,12 @@ const App = () => (
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal title='' onClose={() => {}}>
+              <Modal
+                title=''
+                onClose={() => {
+                  navigate(-1);
+                }}
+              >
                 <OrderInfo />
               </Modal>
             }
@@ -65,8 +76,8 @@ const App = () => (
 
         <Route path='*' element={<NotFound404 />} />
       </Routes>
-    </BrowserRouter>
-  </div>
-);
+    </div>
+  );
+};
 
 export default App;
