@@ -8,8 +8,13 @@ import {
 
 import ingredientsSlice from '../slices/ingredientsSlice';
 import constructorSlice from '../slices/constructorSlice';
+import orderSlice from '../slices/orderSlice';
 
-const rootReducer = combineSlices(ingredientsSlice, constructorSlice); // Заменить на импорт настоящего редьюсера
+const rootReducer = combineSlices(
+  ingredientsSlice,
+  constructorSlice,
+  orderSlice
+); // Заменить на импорт настоящего редьюсера
 
 const store = configureStore({
   reducer: rootReducer,

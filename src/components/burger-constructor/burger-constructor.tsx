@@ -8,6 +8,7 @@ import {
   setOrderModalData
 } from '../../slices/ingredientsSlice';
 import { constructorBurgerElement } from '../../slices/constructorSlice';
+import { sendOrderThunk } from '../../slices/orderSlice';
 // import { getConstructorItems } from '../../slices/ingredientsSlice';
 
 export const BurgerConstructor: FC = () => {
@@ -29,8 +30,12 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
-
-    // тут позже будет dispatch(sendOrderThunk())
+    dispatch(
+      sendOrderThunk([
+        constructorItems.bun._id,
+        ...constructorItems.ingredients.map((el) => el._id)
+      ])
+    );
   };
   const closeOrderModal = () => {
     dispatch(setOrderModalData(null));

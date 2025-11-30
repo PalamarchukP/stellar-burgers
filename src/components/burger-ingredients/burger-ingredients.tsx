@@ -5,7 +5,7 @@ import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
 import { useSelector, useDispatch } from '../../services/store';
 import {
-  fetchIngredients,
+  fetchIngredients as fetchIngredientsThunk,
   getIngredients
 } from '../../slices/ingredientsSlice';
 
@@ -20,7 +20,7 @@ export const BurgerIngredients: FC = () => {
   const sauces = allIngredients.filter((i) => i.type === 'sauce');
 
   useEffect(() => {
-    dispatch(fetchIngredients());
+    dispatch(fetchIngredientsThunk());
   }, [dispatch]);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
