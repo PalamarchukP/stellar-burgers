@@ -1,22 +1,34 @@
 import { FC, SyntheticEvent, useState } from 'react';
+import { useDispatch, useSelector } from '@store';
 import { LoginUI } from '@ui-pages';
+import { loginUser, userIsLoadingSelect } from '@slices';
 
 export const Login: FC = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorText, setErrorText] = useState('');
+
+  const isLoading = useSelector(userIsLoadingSelect);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    setErrorText('');
+
+    dispatch(loginUser({ email, password }))
+      .unwrap()
+      .catch((err: any) => setErrorText(err || 'Ошибка авторизации'));
   };
 
   return (
     <LoginUI
-      errorText=''
+      errorText={errorText}
       email={email}
       setEmail={setEmail}
       password={password}
       setPassword={setPassword}
       handleSubmit={handleSubmit}
+      // isLoading={isLoading}
     />
   );
 };
