@@ -22,16 +22,22 @@ const constructorSlice = createSlice({
   name: 'constructorSlice',
   initialState,
   reducers: {
-    moveIngredient(state, action: PayloadAction<MoveIngredient>) {
-      state.constructorIngredients.splice(action.payload.from, 1);
-      state.constructorIngredients.splice(
-        action.payload.to,
-        0,
-        action.payload.ingredient
-      );
+    moveIngredient(
+      state,
+      action: PayloadAction<{ fromIndex: number; toIndex: number }>
+    ) {
+      const { fromIndex, toIndex } = action.payload;
+      const ingredients = [...state.constructorIngredients];
+
+      if (fromIndex < 0 || fromIndex >= ingredients.length) return;
+      if (toIndex < 0 || toIndex >= ingredients.length) return;
+
+      const [movedItem] = ingredients.splice(fromIndex, 1);
+      ingredients.splice(toIndex, 0, movedItem);
+
+      state.constructorIngredients = ingredients;
     },
     addIngredient(state, action: PayloadAction<TConstructorIngredient>) {
-      console.log(action.payload);
       if (action.payload.type === 'bun') {
         state.bun = action.payload;
       } else state.constructorIngredients.push(action.payload);

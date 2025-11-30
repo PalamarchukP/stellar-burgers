@@ -2,6 +2,7 @@ import { FC, SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from '@store';
 import { RegisterUI } from '@ui-pages';
 import { registerUser, userIsLoadingSelect } from '@slices';
+import { useNavigate } from 'react-router-dom';
 
 export const Register: FC = () => {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ export const Register: FC = () => {
   const [errorText, setErrorText] = useState('');
 
   const isLoading = useSelector(userIsLoadingSelect);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -18,7 +20,8 @@ export const Register: FC = () => {
 
     dispatch(registerUser({ name: userName, email, password }))
       .unwrap()
-      .catch((err: any) => setErrorText(err || 'Ошибка регистрации'));
+      .then(() => navigate('/'))
+      .catch((err: any) => setErrorText(err || 'Ошибка авторизации'));
   };
 
   return (

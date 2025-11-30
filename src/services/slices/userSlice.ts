@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import {
   getUserApi,
@@ -9,8 +9,14 @@ import {
   TLoginData,
   TRegisterData
 } from '@api';
+import { setCookie, deleteCookie } from '../../utils/cookie';
 
-export type RequestStatus = 'idle' | 'loading' | 'success' | 'failed';
+enum RequestStatus {
+  Idle = 'Idle',
+  Loading = 'Loading',
+  Success = 'Success',
+  Failed = 'Failed'
+}
 
 export interface UserState {
   user: TUser | null;
@@ -21,77 +27,82 @@ export interface UserState {
 const initialState: UserState = {
   user: null,
   userCheck: false,
-  requestStatus: 'idle'
+  requestStatus: RequestStatus.Idle
 };
 
-// ====================== Thunks ======================
+export const loginUser = createAsyncThunk(
+  'user/login',
+  async (data: TLoginData, thunkAPI) => {
+    try {
+      const res = await loginUserApi(data);
+      setCookie('accessToken', res.accessToken);
+      localStorage.setItem('refreshToken', res.refreshToken);
 
-// Получение текущего пользователя
+      return res.user;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
+
+export const registerUser = createAsyncThunk(
+  'user/register',
+  async (data: { email: string; password: string; name: string }, thunkAPI) => {
+    try {
+      const res = await registerUserApi(data);
+
+      setCookie('accessToken', res.accessToken);
+      localStorage.setItem('refreshToken', res.refreshToken);
+
+      return res.user;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
 export const fetchUser = createAsyncThunk(
   'user/fetchUser',
-  async (_, { rejectWithValue }) => {
+  async (_, thunkAPI) => {
     try {
-      const response = await getUserApi();
-      return response.user;
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch user');
+      const res = await getUserApi();
+      return res.user;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
 
-// Авторизация
-export const loginUser = createAsyncThunk(
-  'user/loginUser',
-  async (data: TLoginData, { rejectWithValue }) => {
-    try {
-      const response = await loginUserApi(data);
-      return response.user;
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Login failed');
-    }
-  }
-);
-
-// Регистрация
-export const registerUser = createAsyncThunk(
-  'user/registerUser',
-  async (data: TRegisterData, { rejectWithValue }) => {
-    try {
-      const response = await registerUserApi(data);
-      return response.user;
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Registration failed');
-    }
-  }
-);
-
-// Обновление данных пользователя
 export const updateUser = createAsyncThunk(
   'user/updateUser',
-  async (user: Partial<TRegisterData>, { rejectWithValue }) => {
+  async (
+    data: { name?: string; email?: string; password?: string },
+    thunkAPI
+  ) => {
     try {
-      const response = await updateUserApi(user);
-      return response.user;
+      const res = await updateUserApi(data);
+      return res.user;
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Update failed');
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
-// Выход
 export const logoutUser = createAsyncThunk(
-  'user/logoutUser',
-  async (_, { rejectWithValue }) => {
+  'user/logout',
+  async (_, thunkAPI) => {
     try {
       await logoutApi();
+
+      deleteCookie('accessToken');
+      localStorage.removeItem('refreshToken');
+
       return true;
     } catch (err: any) {
-      return rejectWithValue(err.message || 'Logout failed');
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
-
-// ====================== Slice ======================
 
 const userSlice = createSlice({
   name: 'userSlice',
@@ -99,80 +110,76 @@ const userSlice = createSlice({
   reducers: {
     setUserCheck(state, action: PayloadAction<boolean>) {
       state.userCheck = action.payload;
-    },
-    userLogout(state, action: PayloadAction<void>) {
-      state.user = null;
-      state.userCheck = false;
-      state.requestStatus = 'idle';
     }
   },
   selectors: {
     userSelect: (sliceState: UserState) => sliceState.user,
     isAuthCheckedSelect: (sliceState: UserState) => sliceState.userCheck,
     userIsLoadingSelect: (sliceState: UserState) =>
-      sliceState.requestStatus === 'loading'
+      sliceState.requestStatus === RequestStatus.Loading
   },
   extraReducers: (builder) => {
     builder
       // fetchUser
       .addCase(fetchUser.pending, (state) => {
-        state.requestStatus = 'loading';
+        state.requestStatus = RequestStatus.Loading;
       })
       .addCase(fetchUser.fulfilled, (state, action: PayloadAction<TUser>) => {
         state.user = action.payload;
         state.userCheck = true;
-        state.requestStatus = 'success';
+        state.requestStatus = RequestStatus.Success;
       })
       .addCase(fetchUser.rejected, (state) => {
         state.userCheck = true;
-        state.requestStatus = 'failed';
+        state.requestStatus = RequestStatus.Failed;
       })
       // loginUser
       .addCase(loginUser.pending, (state) => {
-        state.requestStatus = 'loading';
+        state.requestStatus = RequestStatus.Loading;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<TUser>) => {
         state.user = action.payload;
-        state.requestStatus = 'success';
+        state.userCheck = true;
+        state.requestStatus = RequestStatus.Success;
       })
       .addCase(loginUser.rejected, (state) => {
-        state.requestStatus = 'failed';
+        state.requestStatus = RequestStatus.Failed;
       })
       // registerUser
       .addCase(registerUser.pending, (state) => {
-        state.requestStatus = 'loading';
+        state.requestStatus = RequestStatus.Loading;
       })
       .addCase(
         registerUser.fulfilled,
         (state, action: PayloadAction<TUser>) => {
           state.user = action.payload;
-          state.requestStatus = 'success';
+          state.requestStatus = RequestStatus.Success;
         }
       )
       .addCase(registerUser.rejected, (state) => {
-        state.requestStatus = 'failed';
+        state.requestStatus = RequestStatus.Failed;
       })
       // updateUser
       .addCase(updateUser.pending, (state) => {
-        state.requestStatus = 'loading';
+        state.requestStatus = RequestStatus.Loading;
       })
       .addCase(updateUser.fulfilled, (state, action: PayloadAction<TUser>) => {
         state.user = action.payload;
-        state.requestStatus = 'success';
+        state.requestStatus = RequestStatus.Success;
       })
       .addCase(updateUser.rejected, (state) => {
-        state.requestStatus = 'failed';
+        state.requestStatus = RequestStatus.Failed;
       })
       // logoutUser
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
-        state.userCheck = false;
-        state.requestStatus = 'idle';
+        state.userCheck = true;
+        state.requestStatus = RequestStatus.Idle;
       });
   }
 });
 
-export const { setUserCheck, userLogout } = userSlice.actions;
+export const { setUserCheck } = userSlice.actions;
 
 export const { userSelect, isAuthCheckedSelect, userIsLoadingSelect } =
   userSlice.selectors;

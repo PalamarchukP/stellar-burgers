@@ -90,8 +90,18 @@ const orderSlice = createSlice({
       })
       .addCase(sendOrderThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.newOrder = action.payload.order;
+        state.currentOrder = action.payload.order;
         state.newOrderRequest = false;
+      })
+
+      .addCase(fetchOrderByNumber.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(fetchOrderByNumber.rejected, (state, action) => {
+        state.error = action.error.message ?? null;
+      })
+      .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
+        state.currentOrder = action.payload;
       });
   }
 });

@@ -1,10 +1,12 @@
-import { userSelect } from '@slices';
-import { useSelector } from '@store';
-import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from '@store';
+import { ProfileUI } from '@ui-pages';
+import { userSelect, fetchUser, updateUser } from '@slices';
 
 export const Profile: FC = () => {
+  const dispatch = useDispatch();
   const user = useSelector(userSelect);
+  const [updateUserError, setUpdateUserError] = useState<string | null>(null);
 
   const [formValue, setFormValue] = useState({
     name: user?.name || '',
@@ -13,14 +15,16 @@ export const Profile: FC = () => {
   });
 
   useEffect(() => {
-    if (user) {
-      setFormValue((prevState) => ({
-        ...prevState,
+    if (!user) {
+      dispatch(fetchUser());
+    } else {
+      setFormValue({
         name: user.name,
-        email: user.email
-      }));
+        email: user.email,
+        password: ''
+      });
     }
-  }, [user]);
+  }, [dispatch, user]);
 
   const isFormChanged =
     formValue.name !== user?.name ||
@@ -29,6 +33,14 @@ export const Profile: FC = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    setUpdateUserError(null);
+
+    dispatch(updateUser(formValue))
+      .unwrap()
+      .then(() => {
+        setFormValue((prev) => ({ ...prev, password: '' }));
+      })
+      .catch((err: Error) => setUpdateUserError(err.message));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
@@ -53,6 +65,7 @@ export const Profile: FC = () => {
     <ProfileUI
       formValue={formValue}
       isFormChanged={isFormChanged}
+      // updateUserError={updateUserError}
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}
