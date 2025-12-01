@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from '@store';
 import { userSelect } from '@slices';
 import { Preloader } from '@ui';
@@ -12,9 +12,14 @@ interface IAuthRouteProps {
   redirectPath?: string;
 }
 
-const AuthRoute: FC<IAuthRouteProps> = ({ type = 'private', redirectPath }) => {
+export const AuthRoute: FC<IAuthRouteProps> = ({
+  type = 'private',
+  redirectPath
+}) => {
   const dispatch = useDispatch();
   const user = useSelector(userSelect);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,18 +36,20 @@ const AuthRoute: FC<IAuthRouteProps> = ({ type = 'private', redirectPath }) => {
   if (loading) return <Preloader />;
 
   if (type === 'private') {
-    return user ? (
-      <Outlet />
-    ) : (
-      <Navigate to={redirectPath || '/login'} replace />
-    );
-  } else {
-    return !user ? (
-      <Outlet />
-    ) : (
-      <Navigate to={redirectPath || '/profile'} replace />
-    );
+    if (!user) {
+      return (
+        <Navigate to='/login' replace state={{ from: location.pathname }} />
+      );
+    }
+    return <Outlet />;
   }
+
+  if (user) {
+    const redirectTo = location.state?.from || redirectPath || '/';
+    navigate(redirectTo);
+  }
+
+  return <Outlet />;
 };
 
 export default AuthRoute;

@@ -20,7 +20,6 @@ export const Login: FC = () => {
 
     dispatch(loginUser({ email, password }))
       .unwrap()
-      .then(() => navigate('/'))
       .catch((err: any) => setErrorText(err.message || 'Ошибка авторизации'));
   };
 
