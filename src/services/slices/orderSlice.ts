@@ -9,7 +9,6 @@ export interface OrderState {
   newOrderRequest: boolean;
   // Для просмотра заказа по ID (страница деталей)
   currentOrder: TOrder | null;
-  // requestStatus: RequestStatus;
   loading: boolean;
   error: string | null;
 }
@@ -19,7 +18,6 @@ const initialState: OrderState = {
   newOrderRequest: false,
 
   currentOrder: null,
-  // currentOrderData: null,
   loading: false,
   error: null
 };
@@ -31,13 +29,13 @@ const orderSlice = createSlice({
     setCurrentOrder(state, action: PayloadAction<TOrder>) {
       state.currentOrder = action.payload;
     },
-    clearNewOrder(state, action: PayloadAction<void>) {
+    clearNewOrder(state) {
       state.newOrder = null;
     },
-    clearCurrentOrder(state, action: PayloadAction<void>) {
+    clearCurrentOrder(state) {
       state.currentOrder = null;
     },
-    clearOrderRequest(state, action: PayloadAction<void>) {
+    clearOrderRequest(state) {
       state.newOrderRequest = false;
     }
   },

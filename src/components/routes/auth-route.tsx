@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from '@store';
-import { userSelect, isAuthCheckedSelect } from '@slices';
+import { userSelect } from '@slices';
 import { Preloader } from '@ui';
 import { fetchUser } from '@thunks';
 
@@ -15,7 +15,6 @@ interface IAuthRouteProps {
 const AuthRoute: FC<IAuthRouteProps> = ({ type = 'private', redirectPath }) => {
   const dispatch = useDispatch();
   const user = useSelector(userSelect);
-  const isAuthChecked = useSelector(isAuthCheckedSelect);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +22,6 @@ const AuthRoute: FC<IAuthRouteProps> = ({ type = 'private', redirectPath }) => {
     if (tokenExists && !user) {
       dispatch(fetchUser())
         .unwrap()
-        .catch(() => {}) // игнорируем ошибки
         .finally(() => setLoading(false));
     } else {
       setLoading(false);

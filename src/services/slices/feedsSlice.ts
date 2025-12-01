@@ -1,20 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TOrdersData, TOrder } from '@utils-types';
 import { fetchProfileOrders, fetchFeed } from '@thunks';
-// import { RequestStatus } from './userSlice';
 
 export type FeedsState = {
   feed: TOrdersData | null;
   ordersAuth: TOrder[];
   loading: boolean;
-  // requestStatus: RequestStatus;
 };
 
 const initialState: FeedsState = {
   feed: null,
   ordersAuth: [],
   loading: false
-  //   requestStatus: idle
 };
 
 export const feedsSlice = createSlice({

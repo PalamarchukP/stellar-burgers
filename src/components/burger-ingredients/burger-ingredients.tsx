@@ -5,7 +5,6 @@ import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
 import { useSelector, useDispatch } from '@store';
 import { getIngredients } from '@slices';
-import { fetchIngredientsThunk } from '@thunks';
 
 export const BurgerIngredients: FC = () => {
   const dispatch = useDispatch();
@@ -14,10 +13,6 @@ export const BurgerIngredients: FC = () => {
   const buns = allIngredients.filter((i) => i.type === 'bun');
   const mains = allIngredients.filter((i) => i.type === 'main');
   const sauces = allIngredients.filter((i) => i.type === 'sauce');
-
-  useEffect(() => {
-    dispatch(fetchIngredientsThunk());
-  }, [dispatch]);
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);

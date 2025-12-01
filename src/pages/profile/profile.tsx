@@ -7,7 +7,6 @@ import { fetchUser, updateUser } from '@thunks';
 export const Profile: FC = () => {
   const dispatch = useDispatch();
   const user = useSelector(userSelect);
-  const [updateUserError, setUpdateUserError] = useState<string | null>(null);
 
   const [formValue, setFormValue] = useState({
     name: user?.name || '',
@@ -33,14 +32,12 @@ export const Profile: FC = () => {
     !!formValue.password;
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    setUpdateUserError(null);
 
     dispatch(updateUser(formValue))
       .unwrap()
       .then(() => {
         setFormValue((prev) => ({ ...prev, password: '' }));
-      })
-      .catch((err: Error) => setUpdateUserError(err.message));
+      });
   };
 
   const handleCancel = (e: SyntheticEvent) => {
@@ -65,7 +62,6 @@ export const Profile: FC = () => {
     <ProfileUI
       formValue={formValue}
       isFormChanged={isFormChanged}
-      // updateUserError={updateUserError}
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}

@@ -1,7 +1,7 @@
 import { FC, SyntheticEvent, useState } from 'react';
-import { useDispatch, useSelector } from '@store';
+import { useDispatch } from '@store';
 import { RegisterUI } from '@ui-pages';
-import { userIsLoadingSelect } from '@slices';
+// import { userIsLoadingSelect } from '@slices';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '@thunks';
 
@@ -12,7 +12,7 @@ export const Register: FC = () => {
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
 
-  const isLoading = useSelector(userIsLoadingSelect);
+  // const isLoading = useSelector(userIsLoadingSelect);
   const navigate = useNavigate();
 
   const handleSubmit = (e: SyntheticEvent) => {

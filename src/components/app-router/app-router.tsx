@@ -19,7 +19,6 @@ export const AppRouter: FC = () => {
 
   return (
     <Routes>
-      {/* Главная и лента заказов */}
       <Route path='/' element={<ConstructorPage />} />
       <Route path='/feed' element={<Feed />} />
       <Route
