@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { TIngredient, TConstructorIngredient } from '@utils-types';
-import { getIngredientsApi } from '@api';
+import { TIngredient } from '@utils-types';
+import { fetchIngredientsThunk } from '@thunks';
 
 export interface IngredientState {
   ingredients: TIngredient[];
@@ -14,14 +14,6 @@ const initialState: IngredientState = {
   loading: false,
   error: null
 };
-
-export const fetchIngredientsThunk = createAsyncThunk(
-  '/ingredients',
-  async () => {
-    const ingredients = await getIngredientsApi();
-    return ingredients;
-  }
-);
 
 const productSlice = createSlice({
   name: 'ingredients',

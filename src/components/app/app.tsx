@@ -3,15 +3,16 @@ import styles from './app.module.css';
 
 import { AppHeader } from '@components';
 import { useDispatch } from '@store';
-import { fetchIngredientsThunk } from '@slices';
 import { FC, useEffect } from 'react';
 import { AppRouter } from '../app-router/app-router';
+import { fetchIngredientsThunk, fetchUser } from '@thunks';
 
 const App: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchIngredientsThunk());
+    dispatch(fetchUser());
   }, [dispatch]);
 
   return (

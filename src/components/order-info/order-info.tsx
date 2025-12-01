@@ -3,13 +3,9 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useDispatch, useSelector } from '@store';
-import {
-  currentOrderSelect,
-  fetchIngredientsThunk,
-  fetchOrderByNumber,
-  getIngredients
-} from '@slices';
+import { currentOrderSelect, getIngredients } from '@slices';
 import { useParams } from 'react-router-dom';
+import { fetchIngredientsThunk, fetchOrderByNumber } from '@thunks';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();

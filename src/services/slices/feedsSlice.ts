@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-import { getFeedsApi, getOrdersApi } from '@api';
+import { createSlice } from '@reduxjs/toolkit';
 import { TOrdersData, TOrder } from '@utils-types';
+import { fetchProfileOrders, fetchFeed } from '@thunks';
 // import { RequestStatus } from './userSlice';
 
 export type FeedsState = {
@@ -17,30 +16,6 @@ const initialState: FeedsState = {
   loading: false
   //   requestStatus: idle
 };
-
-export const fetchFeed = createAsyncThunk(
-  'feeds/fetchFeed',
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getFeedsApi();
-      return data.orders ? data : rejectWithValue('No feed');
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
-
-export const fetchProfileOrders = createAsyncThunk(
-  'feeds/fetchProfileOrders',
-  async (_, { rejectWithValue }) => {
-    try {
-      const orders = await getOrdersApi();
-      return orders;
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
 
 export const feedsSlice = createSlice({
   name: 'feeds',

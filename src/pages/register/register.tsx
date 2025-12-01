@@ -1,8 +1,9 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { useDispatch, useSelector } from '@store';
 import { RegisterUI } from '@ui-pages';
-import { registerUser, userIsLoadingSelect } from '@slices';
+import { userIsLoadingSelect } from '@slices';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '@thunks';
 
 export const Register: FC = () => {
   const dispatch = useDispatch();

@@ -1,15 +1,12 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import {
-  getUserApi,
-  loginUserApi,
-  registerUserApi,
-  updateUserApi,
-  logoutApi,
-  TLoginData,
-  TRegisterData
-} from '@api';
-import { setCookie, deleteCookie } from '../../utils/cookie';
+  fetchUser,
+  loginUser,
+  logoutUser,
+  registerUser,
+  updateUser
+} from '@thunks';
 
 enum RequestStatus {
   Idle = 'Idle',
@@ -29,80 +26,6 @@ const initialState: UserState = {
   userCheck: false,
   requestStatus: RequestStatus.Idle
 };
-
-export const loginUser = createAsyncThunk(
-  'user/login',
-  async (data: TLoginData, thunkAPI) => {
-    try {
-      const res = await loginUserApi(data);
-      setCookie('accessToken', res.accessToken);
-      localStorage.setItem('refreshToken', res.refreshToken);
-
-      return res.user;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err);
-    }
-  }
-);
-
-export const registerUser = createAsyncThunk(
-  'user/register',
-  async (data: { email: string; password: string; name: string }, thunkAPI) => {
-    try {
-      const res = await registerUserApi(data);
-
-      setCookie('accessToken', res.accessToken);
-      localStorage.setItem('refreshToken', res.refreshToken);
-
-      return res.user;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
-    }
-  }
-);
-
-export const fetchUser = createAsyncThunk(
-  'user/fetchUser',
-  async (_, thunkAPI) => {
-    try {
-      const res = await getUserApi();
-      return res.user;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err);
-    }
-  }
-);
-
-export const updateUser = createAsyncThunk(
-  'user/updateUser',
-  async (
-    data: { name?: string; email?: string; password?: string },
-    thunkAPI
-  ) => {
-    try {
-      const res = await updateUserApi(data);
-      return res.user;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
-    }
-  }
-);
-
-export const logoutUser = createAsyncThunk(
-  'user/logout',
-  async (_, thunkAPI) => {
-    try {
-      await logoutApi();
-
-      deleteCookie('accessToken');
-      localStorage.removeItem('refreshToken');
-
-      return true;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
-    }
-  }
-);
 
 const userSlice = createSlice({
   name: 'userSlice',

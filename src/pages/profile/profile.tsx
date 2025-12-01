@@ -1,7 +1,8 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '@store';
 import { ProfileUI } from '@ui-pages';
-import { userSelect, fetchUser, updateUser } from '@slices';
+import { userSelect } from '@slices';
+import { fetchUser, updateUser } from '@thunks';
 
 export const Profile: FC = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ export const Profile: FC = () => {
     formValue.name !== user?.name ||
     formValue.email !== user?.email ||
     !!formValue.password;
-
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setUpdateUserError(null);

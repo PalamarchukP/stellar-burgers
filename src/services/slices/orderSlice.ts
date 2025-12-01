@@ -1,9 +1,7 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchOrderByNumber, sendOrderThunk } from '@thunks';
 
-import { TOrder, TOrdersData } from '@utils-types';
-import { getIngredientsApi, getOrderByNumberApi, orderBurgerApi } from '@api';
-import { useDispatch } from '@store';
-import { clearConstructor } from '@slices';
+import { TOrder } from '@utils-types';
 
 export interface OrderState {
   // Для создания нового заказа (конструктор бургеров)
@@ -26,33 +24,6 @@ const initialState: OrderState = {
   error: null
 };
 
-export const sendOrderThunk = createAsyncThunk(
-  '/order/create',
-  async (ingredients: string[], { rejectWithValue, dispatch }) => {
-    try {
-      const response = await orderBurgerApi(ingredients);
-      if (response.success) {
-        dispatch(clearConstructor());
-      }
-      return response;
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
-
-export const fetchOrderByNumber = createAsyncThunk(
-  '/order/fetchByNumber',
-  async (number: number, { rejectWithValue }) => {
-    try {
-      const response = await getOrderByNumberApi(number);
-      return response.orders[0];
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
-
 const orderSlice = createSlice({
   name: 'orderSlice',
   initialState,
@@ -65,6 +36,9 @@ const orderSlice = createSlice({
     },
     clearCurrentOrder(state, action: PayloadAction<void>) {
       state.currentOrder = null;
+    },
+    clearOrderRequest(state, action: PayloadAction<void>) {
+      state.newOrderRequest = false;
     }
   },
   selectors: {
@@ -90,7 +64,7 @@ const orderSlice = createSlice({
       })
       .addCase(sendOrderThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentOrder = action.payload.order;
+        state.newOrder = action.payload.order;
         state.newOrderRequest = false;
       })
 
@@ -106,8 +80,12 @@ const orderSlice = createSlice({
   }
 });
 
-export const { setCurrentOrder, clearNewOrder, clearCurrentOrder } =
-  orderSlice.actions;
+export const {
+  setCurrentOrder,
+  clearNewOrder,
+  clearCurrentOrder,
+  clearOrderRequest
+} = orderSlice.actions;
 
 export const {
   newOrderSelect,

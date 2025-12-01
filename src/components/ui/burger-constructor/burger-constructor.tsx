@@ -9,8 +9,7 @@ import { BurgerConstructorUIProps } from './type';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorElement, Modal } from '@components';
 import { Preloader, OrderDetailsUI } from '@ui';
-import { useSelector } from '@store';
-import { userSelect } from '@slices';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   constructorItems,
@@ -20,7 +19,7 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
   onOrderClick,
   closeOrderModal
 }) => {
-  const user = useSelector(userSelect);
+  const navigate = useNavigate();
   return (
     <section className={styles.burger_constructor}>
       {constructorItems.bun ? (
@@ -82,21 +81,20 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
           <p className={`text ${styles.text} mr-2`}>{price}</p>
           <CurrencyIcon type='primary' />
         </div>
-        {user && (
-          <Button
-            htmlType='button'
-            type='primary'
-            size='large'
-            disabled={!constructorItems.bun}
-            onClick={onOrderClick}
-          >
-            Оформить заказ
-          </Button>
-        )}
+        <Button
+          htmlType='button'
+          type='primary'
+          size='large'
+          disabled={!constructorItems.bun}
+          onClick={onOrderClick}
+        >
+          Оформить заказ
+        </Button>
       </div>
 
       {orderRequest && (
         <Modal onClose={closeOrderModal} title={'Оформляем заказ...'}>
+          {orderRequest}
           <Preloader />
         </Modal>
       )}

@@ -1,8 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from '@store';
-import { fetchUser, userSelect, isAuthCheckedSelect } from '@slices';
+import { userSelect, isAuthCheckedSelect } from '@slices';
 import { Preloader } from '@ui';
+import { fetchUser } from '@thunks';
 
 type RouteType = 'private' | 'public';
 
