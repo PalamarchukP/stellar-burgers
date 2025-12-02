@@ -8,7 +8,10 @@ export const OrderModal: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Modal title={`Детали заказа #${number}`} onClose={() => navigate(-1)}>
+    <Modal
+      title={`Детали заказа #${String(number).padStart(6, '0')}`}
+      onClose={() => navigate(-1)}
+    >
       <OrderInfo />
     </Modal>
   );
