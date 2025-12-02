@@ -1,8 +1,6 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { useDispatch } from '@store';
 import { LoginUI } from '@ui-pages';
-// import { userIsLoadingSelect } from '@slices';
-import { useNavigate } from 'react-router-dom';
 import { loginUser } from '@thunks';
 
 export const Login: FC = () => {
@@ -11,16 +9,13 @@ export const Login: FC = () => {
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
 
-  // const isLoading = useSelector(userIsLoadingSelect);
-  const navigate = useNavigate();
-
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setErrorText('');
 
     dispatch(loginUser({ email, password }))
       .unwrap()
-      .catch((err: any) => setErrorText(err.message || 'Ошибка авторизации'));
+      .catch((err) => setErrorText(err.message || 'Ошибка авторизации'));
   };
 
   return (
@@ -31,7 +26,6 @@ export const Login: FC = () => {
       password={password}
       setPassword={setPassword}
       handleSubmit={handleSubmit}
-      // isLoading={isLoading}
     />
   );
 };

@@ -4,10 +4,8 @@ import { fetchOrderByNumber, sendOrderThunk } from '@thunks';
 import { TOrder } from '@utils-types';
 
 export interface OrderState {
-  // Для создания нового заказа (конструктор бургеров)
   newOrder: TOrder | null;
   newOrderRequest: boolean;
-  // Для просмотра заказа по ID (страница деталей)
   currentOrder: TOrder | null;
   loading: boolean;
   error: string | null;

@@ -13,6 +13,7 @@ import {
 } from '@pages';
 import { Modal, OrderInfo, IngredientDetails } from '@components';
 import AuthRoute from '../routes/auth-route';
+import { OrderModal } from '../order-modal/order-modal';
 
 export const AppRouter: FC = () => {
   const navigate = useNavigate();
@@ -21,14 +22,7 @@ export const AppRouter: FC = () => {
     <Routes>
       <Route path='/' element={<ConstructorPage />} />
       <Route path='/feed' element={<Feed />} />
-      <Route
-        path='/feed/:number'
-        element={
-          <Modal title='Детали заказа' onClose={() => navigate(-1)}>
-            <OrderInfo />
-          </Modal>
-        }
-      />
+      <Route path='/feed/:number' element={<OrderModal />} />
       <Route
         path='/ingredients/:id'
         element={
@@ -48,14 +42,7 @@ export const AppRouter: FC = () => {
       <Route element={<AuthRoute type='private' />}>
         <Route path='/profile' element={<Profile />} />
         <Route path='/profile/orders' element={<ProfileOrders />} />
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <Modal title='Детали заказа' onClose={() => navigate(-1)}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
+        <Route path='/profile/orders/:number' element={<OrderModal />} />
       </Route>
 
       <Route path='*' element={<NotFound404 />} />

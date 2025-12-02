@@ -43,7 +43,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // fetchUser
       .addCase(fetchUser.pending, (state) => {
         state.requestStatus = RequestStatus.Loading;
       })
@@ -56,7 +55,6 @@ const userSlice = createSlice({
         state.userCheck = true;
         state.requestStatus = RequestStatus.Failed;
       })
-      // loginUser
       .addCase(loginUser.pending, (state) => {
         state.requestStatus = RequestStatus.Loading;
       })
@@ -68,7 +66,6 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state) => {
         state.requestStatus = RequestStatus.Failed;
       })
-      // registerUser
       .addCase(registerUser.pending, (state) => {
         state.requestStatus = RequestStatus.Loading;
       })
@@ -82,7 +79,6 @@ const userSlice = createSlice({
       .addCase(registerUser.rejected, (state) => {
         state.requestStatus = RequestStatus.Failed;
       })
-      // updateUser
       .addCase(updateUser.pending, (state) => {
         state.requestStatus = RequestStatus.Loading;
       })
@@ -93,7 +89,6 @@ const userSlice = createSlice({
       .addCase(updateUser.rejected, (state) => {
         state.requestStatus = RequestStatus.Failed;
       })
-      // logoutUser
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.userCheck = true;

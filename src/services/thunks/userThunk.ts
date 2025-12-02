@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk(
 
       return res.user;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue((err as { message: string }).message);
     }
   }
 );
@@ -34,8 +34,8 @@ export const registerUser = createAsyncThunk(
       localStorage.setItem('refreshToken', res.refreshToken);
 
       return res.user;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err) {
+      return thunkAPI.rejectWithValue((err as { message: string }).message);
     }
   }
 );
@@ -47,7 +47,7 @@ export const fetchUser = createAsyncThunk(
       const res = await getUserApi();
       return res.user;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      return thunkAPI.rejectWithValue((err as { message: string }).message);
     }
   }
 );
@@ -61,8 +61,8 @@ export const updateUser = createAsyncThunk(
     try {
       const res = await updateUserApi(data);
       return res.user;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err) {
+      return thunkAPI.rejectWithValue((err as { message: string }).message);
     }
   }
 );
@@ -77,8 +77,8 @@ export const logoutUser = createAsyncThunk(
       localStorage.removeItem('refreshToken');
 
       return true;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.message);
+    } catch (err) {
+      return thunkAPI.rejectWithValue((err as { message: string }).message);
     }
   }
 );
