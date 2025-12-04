@@ -1,11 +1,11 @@
-export { default as ingredientsSlice } from './ingredientsSlice';
-export { default as constructorSlice } from './constructorSlice';
-export { default as orderSlice } from './orderSlice';
-export { default as userSlice } from './userSlice';
-export { default as feedSlice } from './feedsSlice';
+export { default as ingredientsSlice } from './ingredients/ingredientsSlice';
+export { default as constructorSlice } from './constructor/constructorSlice';
+export { default as orderSlice } from './order/orderSlice';
+export { default as userSlice } from './user/userSlice';
+export { default as feedSlice } from './feed/feedsSlice';
 
-export * from './constructorSlice';
-export * from './ingredientsSlice';
-export * from './orderSlice';
-export * from './userSlice';
-export * from './feedsSlice';
+export * from './constructor/constructorSlice';
+export * from './ingredients/ingredientsSlice';
+export * from './order/orderSlice';
+export * from './user/userSlice';
+export * from './feed/feedsSlice';

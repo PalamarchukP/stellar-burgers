@@ -9,16 +9,16 @@ const container = document.getElementById('root') as HTMLElement;
 const root = ReactDOMClient.createRoot(container!);
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter
-        future={{
-          v7_relativeSplatPath: true,
-          v7_startTransition: true
-        }}
-      >
-        <App />
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <BrowserRouter
+      future={{
+        v7_relativeSplatPath: true,
+        v7_startTransition: true
+      }}
+    >
+      <App />
+    </BrowserRouter>
+  </Provider>
+  // {/* </React.StrictMode> */}
 );
