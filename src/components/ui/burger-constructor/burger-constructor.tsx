@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import {
   Button,
   ConstructorElement,
@@ -82,13 +82,16 @@ export const BurgerConstructorUI: FC<BurgerConstructorUIProps> = ({
         htmlType='button'
         type='primary'
         size='large'
-        children='Оформить заказ'
+        disabled={!constructorItems.bun}
         onClick={onOrderClick}
-      />
+      >
+        Оформить заказ
+      </Button>
     </div>
 
     {orderRequest && (
       <Modal onClose={closeOrderModal} title={'Оформляем заказ...'}>
+        {orderRequest}
         <Preloader />
       </Modal>
     )}
