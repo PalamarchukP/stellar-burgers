@@ -14,48 +14,48 @@ describe('constructorSlice', () => {
   };
 
   const testBun: TConstructorIngredient = {
-    _id: 'bun1',
+    _id: '2',
     id: 'bun1',
-    name: 'Bun',
+    name: 'Булка розовая',
     type: 'bun',
     proteins: 10,
-    fat: 5,
-    carbohydrates: 20,
-    calories: 150,
-    price: 100,
-    image: 'bun.png',
-    image_large: 'bun_large.png',
-    image_mobile: 'bun_mobile.png'
+    fat: 26,
+    carbohydrates: 57,
+    calories: 270,
+    price: 120,
+    image: 'https://code.s3.yandex.net/react/code/bun-01.png',
+    image_mobile: 'https://code.s3.yandex.net/react/code/bun-01-mobile.png',
+    image_large: 'https://code.s3.yandex.net/react/code/bun-01-large.png'
   };
 
   const testIngredient1: TConstructorIngredient = {
-    _id: 'i1',
+    _id: '3',
     id: 'i1',
-    name: 'Lettuce',
+    name: 'Начинка 1',
     type: 'main',
-    proteins: 1,
-    fat: 0,
-    carbohydrates: 1,
-    calories: 5,
-    price: 20,
-    image: 'lettuce.png',
-    image_large: 'lettuce_large.png',
-    image_mobile: 'lettuce_mobile.png'
+    proteins: 12,
+    fat: 30,
+    carbohydrates: 63,
+    calories: 500,
+    price: 270,
+    image: 'https://code.s3.yandex.net/react/code/meat-03.png',
+    image_mobile: 'https://code.s3.yandex.net/react/code/meat-03-mobile.png',
+    image_large: 'https://code.s3.yandex.net/react/code/meat-03-large.png'
   };
 
   const testIngredient2: TConstructorIngredient = {
-    _id: 'i2',
+    _id: '4',
     id: 'i2',
-    name: 'Tomato',
+    name: 'Начинка 2',
     type: 'main',
-    proteins: 1,
-    fat: 0,
-    carbohydrates: 2,
-    calories: 10,
-    price: 25,
-    image: 'tomato.png',
-    image_large: 'tomato_large.png',
-    image_mobile: 'tomato_mobile.png'
+    proteins: 15,
+    fat: 28,
+    carbohydrates: 75,
+    calories: 570,
+    price: 310,
+    image: 'https://code.s3.yandex.net/react/code/meat-02.png',
+    image_mobile: 'https://code.s3.yandex.net/react/meat/main-02-mobile.png',
+    image_large: 'https://code.s3.yandex.net/react/meat/main-02-large.png'
   };
 
   it('добавляет булку через addIngredient', () => {
