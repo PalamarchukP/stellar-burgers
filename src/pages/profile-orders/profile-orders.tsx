@@ -8,7 +8,7 @@ import { fetchProfileOrders } from '@thunks';
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch();
   const userOrders = useSelector(feedOrdersSelect);
-  const user = useSelector((state) => state.userSlice.user);
+  const user = useSelector((state) => state.user.data);
 
   useEffect(() => {
     if (user) {

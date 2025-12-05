@@ -1,17 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import { TConstructorIngredient } from '@utils-types';
-
-export interface ConstructorState {
-  bun: TConstructorIngredient | null;
-  constructorIngredients: TConstructorIngredient[];
-}
-
-export interface MoveIngredient {
-  ingredient: TConstructorIngredient;
-  from: number;
-  to: number;
-}
+import { ConstructorState, MoveIngredient } from './type';
 
 const initialState: ConstructorState = {
   bun: null,
@@ -22,10 +11,7 @@ const constructorSlice = createSlice({
   name: 'constructorSlice',
   initialState,
   reducers: {
-    moveIngredient(
-      state,
-      action: PayloadAction<{ fromIndex: number; toIndex: number }>
-    ) {
+    moveIngredient(state, action: PayloadAction<MoveIngredient>) {
       const { fromIndex, toIndex } = action.payload;
       const ingredients = [...state.constructorIngredients];
 
@@ -40,15 +26,17 @@ const constructorSlice = createSlice({
     addIngredient(state, action: PayloadAction<TConstructorIngredient>) {
       if (action.payload.type === 'bun') {
         state.bun = action.payload;
-      } else state.constructorIngredients.push(action.payload);
+      } else {
+        state.constructorIngredients.push(action.payload);
+      }
     },
     removeIngredient(state, action: PayloadAction<string>) {
-      const removedIngredient = state.constructorIngredients.find(
+      const index = state.constructorIngredients.findIndex(
         (el) => el.id === action.payload
       );
-      if (!removedIngredient) return;
-      const index = state.constructorIngredients.indexOf(removedIngredient);
-      state.constructorIngredients.splice(index, 1);
+      if (index >= 0) {
+        state.constructorIngredients.splice(index, 1);
+      }
     },
     clearConstructor(state) {
       state.bun = null;

@@ -1,27 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchOrderByNumber, sendOrderThunk } from '@thunks';
-
 import { TOrder } from '@utils-types';
-
-export interface OrderState {
-  newOrder: TOrder | null;
-  newOrderRequest: boolean;
-  currentOrder: TOrder | null;
-  loading: boolean;
-  error: string | null;
-}
+import { OrderState } from './type';
 
 const initialState: OrderState = {
   newOrder: null,
   newOrderRequest: false,
+  newOrderError: null,
 
   currentOrder: null,
-  loading: false,
-  error: null
+  currentOrderRequest: false,
+  currentOrderError: null
 };
 
 const orderSlice = createSlice({
-  name: 'orderSlice',
+  name: 'order',
   initialState,
   reducers: {
     setCurrentOrder(state, action: PayloadAction<TOrder>) {
@@ -37,41 +30,49 @@ const orderSlice = createSlice({
       state.newOrderRequest = false;
     }
   },
+
   selectors: {
-    newOrderSelect: (sliceState: OrderState) => sliceState.newOrder,
-    newOrderRequestSelect: (sliceState: OrderState) =>
-      sliceState.newOrderRequest,
-    currentOrderSelect: (sliceState: OrderState) => sliceState.currentOrder,
-    currentOrderLoadingSelect: (sliceState: OrderState) => sliceState.loading,
-    orderIsLoadingSelect: (sliceState: OrderState) => sliceState.loading
+    newOrderSelect: (orderState) => orderState.newOrder,
+    newOrderRequestSelect: (orderState) => orderState.newOrderRequest,
+    newOrderErrorSelect: (orderState) => orderState.newOrderError,
+
+    currentOrderSelect: (orderState) => orderState.currentOrder,
+    currentOrderRequestSelect: (orderState) => orderState.currentOrderRequest,
+    currentOrderErrorSelect: (orderState) => orderState.currentOrderError
   },
 
   extraReducers: (builder) => {
     builder
       .addCase(sendOrderThunk.pending, (state) => {
-        state.loading = true;
         state.newOrderRequest = true;
-        state.error = null;
-      })
-      .addCase(sendOrderThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.newOrderRequest = false;
-        state.error = action.error.message ?? null;
-      })
-      .addCase(sendOrderThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.newOrder = action.payload.order;
-        state.newOrderRequest = false;
+        state.newOrderError = null;
       })
 
+      .addCase(sendOrderThunk.fulfilled, (state, action) => {
+        state.newOrderRequest = false;
+        state.newOrder = action.payload.order;
+      })
+
+      .addCase(sendOrderThunk.rejected, (state, action) => {
+        state.newOrderRequest = false;
+        state.newOrderError = action.error.message ?? 'Ошибка создания заказа';
+      });
+
+    builder
       .addCase(fetchOrderByNumber.pending, (state) => {
-        state.error = null;
+        state.currentOrderRequest = true;
+        state.currentOrderError = null;
       })
-      .addCase(fetchOrderByNumber.rejected, (state, action) => {
-        state.error = action.error.message ?? null;
-      })
+
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
+        state.currentOrderRequest = false;
         state.currentOrder = action.payload;
+      })
+
+      .addCase(fetchOrderByNumber.rejected, (state, action) => {
+        state.currentOrderRequest = false;
+        state.currentOrderError =
+          action.error.message ?? 'Ошибка загрузки заказа';
       });
   }
 });
@@ -86,9 +87,10 @@ export const {
 export const {
   newOrderSelect,
   newOrderRequestSelect,
+  newOrderErrorSelect,
   currentOrderSelect,
-  currentOrderLoadingSelect,
-  orderIsLoadingSelect
+  currentOrderRequestSelect,
+  currentOrderErrorSelect
 } = orderSlice.selectors;
 
 export default orderSlice;

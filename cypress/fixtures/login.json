@@ -1,0 +1,6 @@
+{
+  "success": true,
+  "accessToken": "Bearer fake",
+  "refreshToken": "fake",
+  "user": { "email": "review25@gmail.com", "name": "review" }
+}
