@@ -7,99 +7,122 @@ import {
   registerUser,
   updateUser
 } from '@thunks';
+import { TUserState } from './type';
 
-enum RequestStatus {
-  Idle = 'Idle',
-  Loading = 'Loading',
-  Success = 'Success',
-  Failed = 'Failed'
-}
+const initialState: TUserState = {
+  isAuthChecked: false,
+  data: null,
 
-export interface UserState {
-  user: TUser | null;
-  userCheck: boolean;
-  requestStatus: RequestStatus;
-}
+  registerUserErorr: null,
+  registerUserRequest: false,
 
-const initialState: UserState = {
-  user: null,
-  userCheck: false,
-  requestStatus: RequestStatus.Idle
+  loginUserErorr: null,
+  loginUserRequest: false,
+
+  updateUserErorr: null,
+  updateUserRequest: false,
+
+  getUserErorr: null,
+  getUserRequest: false
 };
 
 const userSlice = createSlice({
-  name: 'userSlice',
+  name: 'user',
   initialState,
   reducers: {
-    setUserCheck(state, action: PayloadAction<boolean>) {
-      state.userCheck = action.payload;
+    setAuthChecked(state, action: PayloadAction<boolean>) {
+      state.isAuthChecked = action.payload;
     }
   },
   selectors: {
-    userSelect: (sliceState: UserState) => sliceState.user,
-    isAuthCheckedSelect: (sliceState: UserState) => sliceState.userCheck,
-    userIsLoadingSelect: (sliceState: UserState) =>
-      sliceState.requestStatus === RequestStatus.Loading
+    userSelect: (userState) => userState.data,
+    isAuthCheckedSelect: (userState) => userState.isAuthChecked,
+    isGetUserLoading: (userState) => userState.getUserRequest,
+    isLoginLoading: (userState) => userState.loginUserRequest,
+    isRegisterLoading: (userState) => userState.registerUserRequest,
+    isUpdateLoading: (userState) => userState.updateUserRequest
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchUser.pending, (state) => {
-        state.requestStatus = RequestStatus.Loading;
+        state.getUserRequest = true;
+        state.getUserErorr = null;
       })
       .addCase(fetchUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.user = action.payload;
-        state.userCheck = true;
-        state.requestStatus = RequestStatus.Success;
+        state.data = action.payload;
+        state.isAuthChecked = true;
+        state.getUserRequest = false;
       })
-      .addCase(fetchUser.rejected, (state) => {
-        state.userCheck = true;
-        state.requestStatus = RequestStatus.Failed;
-      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.getUserErorr =
+          action.error?.message || 'Ошибка получения пользователя';
+        state.isAuthChecked = true;
+        state.getUserRequest = false;
+      });
+
+    builder
       .addCase(loginUser.pending, (state) => {
-        state.requestStatus = RequestStatus.Loading;
+        state.loginUserRequest = true;
+        state.loginUserErorr = null;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.user = action.payload;
-        state.userCheck = true;
-        state.requestStatus = RequestStatus.Success;
+        state.data = action.payload;
+        state.isAuthChecked = true;
+        state.loginUserRequest = false;
       })
-      .addCase(loginUser.rejected, (state) => {
-        state.requestStatus = RequestStatus.Failed;
-      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loginUserErorr = action.error?.message || 'Ошибка авторизации';
+        state.loginUserRequest = false;
+      });
+
+    builder
       .addCase(registerUser.pending, (state) => {
-        state.requestStatus = RequestStatus.Loading;
+        state.registerUserRequest = true;
+        state.registerUserErorr = null;
       })
       .addCase(
         registerUser.fulfilled,
         (state, action: PayloadAction<TUser>) => {
-          state.user = action.payload;
-          state.requestStatus = RequestStatus.Success;
+          state.data = action.payload;
+          state.registerUserRequest = false;
         }
       )
-      .addCase(registerUser.rejected, (state) => {
-        state.requestStatus = RequestStatus.Failed;
-      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.registerUserErorr = action.error?.message || 'Ошибка регистрации';
+        state.registerUserRequest = false;
+      });
+
+    builder
       .addCase(updateUser.pending, (state) => {
-        state.requestStatus = RequestStatus.Loading;
+        state.updateUserRequest = true;
+        state.updateUserErorr = null;
       })
       .addCase(updateUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        state.user = action.payload;
-        state.requestStatus = RequestStatus.Success;
+        state.data = action.payload;
+        state.updateUserRequest = false;
       })
-      .addCase(updateUser.rejected, (state) => {
-        state.requestStatus = RequestStatus.Failed;
-      })
-      .addCase(logoutUser.fulfilled, (state) => {
-        state.user = null;
-        state.userCheck = true;
-        state.requestStatus = RequestStatus.Idle;
+      .addCase(updateUser.rejected, (state, action) => {
+        state.updateUserErorr =
+          action.error?.message || 'Ошибка обновления данных';
+        state.updateUserRequest = false;
       });
+
+    builder.addCase(logoutUser.fulfilled, (state) => {
+      state.data = null;
+      state.isAuthChecked = true;
+    });
   }
 });
 
-export const { setUserCheck } = userSlice.actions;
+export const { setAuthChecked } = userSlice.actions;
 
-export const { userSelect, isAuthCheckedSelect, userIsLoadingSelect } =
-  userSlice.selectors;
+export const {
+  userSelect,
+  isAuthCheckedSelect,
+  isGetUserLoading,
+  isLoginLoading,
+  isRegisterLoading,
+  isUpdateLoading
+} = userSlice.selectors;
 
 export default userSlice;
