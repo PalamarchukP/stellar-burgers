@@ -1,15 +1,22 @@
 /// <reference types="cypress" />
 describe('проверяем доступность приложения', function () {
   it('сервис должен быть доступен по адресу localhost:4000', function () {
-    cy.visit('http://localhost:4000');
+    cy.visit('/');
   });
+});
+
+beforeEach(function () {
+  cy.viewport(1300, 800);
+  cy.visit('/');
 });
 
 describe('добавление ингридиентов в конструктор работает корректно', function () {
   beforeEach(function () {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
-    cy.viewport(1300, 800);
-    cy.visit('http://localhost:4000');
+    cy.intercept('GET', 'api/auth/user', { fixture: 'user.json' });
+    cy.intercept('POST', 'api/orders', { fixture: 'post_order.json' }).as(
+      'postOrder'
+    );
   });
 
   it('добавление булки', function () {
@@ -30,13 +37,30 @@ describe('добавление ингридиентов в конструкто�
       .contains('Соус острый')
       .should('exist');
   });
+
+  it('конструктор очищается после оформления заказа', function () {
+    cy.get('[data-cy=bun-ingredients]').contains('Добавить').click();
+    cy.get('[data-cy=mains-ingredients]').contains('Добавить').click();
+
+    cy.get('[data-cy=order-summ] button').click();
+    cy.get('[data-cy=order-number]', { timeout: 5000 })
+      .contains('123456')
+      .should('exist');
+
+    //закрываем модальное окно
+    cy.get('#modals button[aria-label="Закрыть"]').click();
+
+    //проверяем, что конструктор пустой
+    cy.get('[data-cy=constructor-bun-1]').should('not.exist');
+    cy.get('[data-cy=constructor-bun-2]').should('not.exist');
+
+    cy.contains('Выберите начинку').should('exist');
+  });
 });
 
 describe('модальное окно ингридиентов работает корректно', function () {
   beforeEach(function () {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients.json' });
-    cy.viewport(1300, 800);
-    cy.visit('http://localhost:4000');
   });
 
   it('открытие окна', function () {
@@ -68,8 +92,6 @@ describe('оформление заказа работает корректно'
       JSON.stringify('test-refreshToken')
     );
     cy.setCookie('accessToken', 'test-accessToken');
-    cy.viewport(1300, 800);
-    cy.visit('http://localhost:4000');
   });
 
   afterEach(function () {
