@@ -1,13 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
-
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TIngredient } from '@utils-types';
 import { fetchIngredientsThunk } from '@thunks';
-
-export interface IngredientState {
-  ingredients: TIngredient[];
-  loading: boolean;
-  error: string | null;
-}
+import { IngredientState } from './type';
 
 const initialState: IngredientState = {
   ingredients: [],
@@ -15,32 +9,39 @@ const initialState: IngredientState = {
   error: null
 };
 
-const productSlice = createSlice({
+const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
   reducers: {},
   selectors: {
-    getIngredients: (sliceState: IngredientState) => sliceState.ingredients,
-    ingredientsIsLoading: (sliceState: IngredientState) => sliceState.loading
+    getIngredients: (ingredientsState: IngredientState) =>
+      ingredientsState.ingredients,
+    ingredientsIsLoading: (ingredientsState: IngredientState) =>
+      ingredientsState.loading,
+    ingredientsError: (ingredientsState: IngredientState) =>
+      ingredientsState.error
   },
-
   extraReducers: (builder) => {
     builder
       .addCase(fetchIngredientsThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+      .addCase(
+        fetchIngredientsThunk.fulfilled,
+        (state, action: PayloadAction<TIngredient[]>) => {
+          state.loading = false;
+          state.ingredients = action.payload;
+        }
+      )
       .addCase(fetchIngredientsThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? null;
-      })
-      .addCase(fetchIngredientsThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.ingredients = action.payload;
+        state.error = action.error.message ?? 'Ошибка загрузки ингредиентов';
       });
   }
 });
 
-export const { getIngredients, ingredientsIsLoading } = productSlice.selectors;
+export const { getIngredients, ingredientsIsLoading, ingredientsError } =
+  ingredientsSlice.selectors;
 
-export default productSlice;
+export default ingredientsSlice;
